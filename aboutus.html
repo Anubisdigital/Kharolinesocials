@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Viewer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #FF65C5;
+            --black: #000000;
+            --white: #FFFFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            border-radius: 0 !important;
+        }
+
+        body {
+            background-color: var(--black);
+            color: var(--white);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Header Styles */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: var(--black);
+            border-bottom: 2px solid var(--primary);
+            z-index: 1000;
+            height: 70px;
+        }
+
+        .search-container {
+            flex-grow: 1;
+            max-width: 500px;
+            display: flex;
+            align-items: center;
+            background: var(--white);
+            padding: 5px 15px;
+        }
+
+        .search-container input {
+            width: 100%;
+            border: none;
+            outline: none;
+            padding: 8px;
+            font-size: 16px;
+            color: var(--black);
+        }
+
+        .search-container i {
+            color: var(--primary);
+            margin-right: 10px;
+        }
+
+        /* Dropdown Navigation */
+        .nav-wrapper {
+            position: relative;
+            margin-left: 20px;
+        }
+
+        .dropdown-btn {
+            background: var(--primary);
+            color: var(--black);
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: var(--white);
+            min-width: 160px;
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.5);
+        }
+
+        .dropdown-content a {
+            color: var(--black);
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            border-bottom: 1px solid #eee;
+        }
+
+        .dropdown-content a:hover {
+            background-color: var(--primary);
+        }
+
+        .nav-wrapper:hover .dropdown-content {
+            display: block;
+        }
+
+        /* Loading Animation */
+        #loader-overlay {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            width: 100%;
+            height: calc(100% - 70px);
+            background: var(--black);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 5px solid var(--white);
+            border-bottom-color: var(--primary);
+            display: inline-block;
+            animation: rotation 1s linear infinite;
+        }
+
+        @keyframes rotation {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        #error-msg {
+            display: none;
+            color: var(--primary);
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        /* Viewer Area */
+        #content-frame {
+            width: 100%;
+            height: calc(100vh - 70px);
+            border: none;
+            background: var(--black);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="search-container">
+            <i class="fa fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Search portfolio...">
+        </div>
+
+        <div class="nav-wrapper">
+            <button class="dropdown-btn">NAVIGATE <i class="fa fa-chevron-down"></i></button>
+            <div class="dropdown-content">
+                <a href="index.html">Home</a>
+                <a href="location.html">Location</a>
+                <a href="contact.html">Contact</a>
+            </div>
+        </div>
+    </header>
+
+    <div id="loader-overlay">
+        <span class="loader"></span>
+        <div id="error-msg">Loading taking too long? <br>Please check your connection or permissions.</div>
+    </div>
+
+    <iframe 
+        id="content-frame"
+        src="https://drive.google.com/file/d/1oMlhGwv8g_XDV8BpH-h_f65K0ShrAIfM/preview" 
+        allow="autoplay"
+        onload="hideLoader()">
+    </iframe>
+
+    <script>
+        const loader = document.getElementById('loader-overlay');
+        const errorMsg = document.getElementById('error-msg');
+        
+        // Safety timeout: If it doesn't load in 60 seconds, stop the loader and show message
+        const timeoutDuration = 60000; 
+        const safetyTimer = setTimeout(() => {
+            errorMsg.style.display = 'block';
+            // Optionally hide loader even if failed so they can see the iframe error
+            setTimeout(() => { loader.style.display = 'none'; }, 2000);
+        }, timeoutDuration);
+
+        function hideLoader() {
+            clearTimeout(safetyTimer);
+            loader.style.display = 'none';
+        }
+
+        // Search bar interaction
+        document.getElementById('searchInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                alert('Searching for: ' + this.value + '\n(Search within PDF requires the PDF native search tool ctrl+f)');
+            }
+        });
+    </script>
+</body>
+</html>
