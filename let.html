@@ -1,0 +1,524 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Intake Form | Socials by Kharoline</title>
+    <link rel="icon" type="image/png" href="kh.png">
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <style>
+        :root {
+            --baby-blue: #89CFF0;
+            --green-accent: #4CAF50;
+            --text-black: rgba(0, 0, 0, 0.85);
+            --white: #ffffff;
+            --black: #000000;
+        }
+
+        * {
+            box-sizing: border-box;
+            border-radius: 0 !important; /* STRICT ANUBIS PROTOCOL */
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--white);
+            color: var(--text-black);
+            line-height: 1.6;
+        }
+
+        .header-image {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .form-header {
+            border-bottom: 4px solid var(--baby-blue);
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+        }
+
+        .logo-small {
+            height: 50px;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            font-size: 24px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 0;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        label span {
+            color: #d93025;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="url"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            background-color: var(--white);
+            color: var(--text-black);
+            font-size: 1rem;
+        }
+
+        input:focus, textarea:focus {
+            outline: 2px solid var(--baby-blue);
+            border-color: transparent;
+        }
+
+        .radio-group {
+            margin-top: 10px;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        input[type="radio"], input[type="checkbox"] {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+            accent-color: var(--green-accent);
+        }
+
+        .revenue-custom {
+            margin-top: 10px;
+            border-left: 3px solid var(--baby-blue);
+            padding-left: 15px;
+        }
+
+        .submit-btn {
+            background-color: var(--black);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .submit-btn:hover {
+            background-color: var(--baby-blue);
+            color: var(--black);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* NOTIFICATION OVERLAY */
+        #notification-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .notification-card {
+            background: var(--white);
+            border: 5px solid var(--baby-blue);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            animation: slideIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .notification-card h2 {
+            text-transform: uppercase;
+            font-size: 2rem;
+            margin-bottom: 15px;
+            color: var(--black);
+        }
+
+        .notification-card p {
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+
+        .close-notify-btn {
+            background: var(--black);
+            color: var(--white);
+            padding: 12px 30px;
+            text-decoration: none;
+            font-weight: 800;
+            display: inline-block;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .footer-note {
+            margin-top: 30px;
+            font-size: 0.8rem;
+            text-align: center;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+
+        .error-message {
+            color: #d93025;
+            font-weight: bold;
+            display: none;
+            margin-bottom: 20px;
+            text-align: center;
+            padding: 10px;
+            border: 2px solid #d93025;
+        }
+
+        .loading-message {
+            color: #89CFF0;
+            font-weight: bold;
+            display: none;
+            margin-bottom: 20px;
+            text-align: center;
+            padding: 10px;
+            background: #f0f8ff;
+        }
+    </style>
+</head>
+<body>
+
+    <img src="khd.jpg" alt="Header" class="header-image" onerror="this.style.display='none'">
+
+    <div class="container">
+        <div class="form-header">
+            <img src="kh.png" alt="Logo" class="logo-small" onerror="this.style.display='none'">
+            <h1>Business Strategy Intake Form</h1>
+        </div>
+
+        <div id="validation-error" class="error-message">⚠️ INCOMPLETE FORM: Please fill in all required fields (*) before submitting.</div>
+        <div id="loading-status" class="loading-message"><i class="spinner"></i> Submitting to secure database...</div>
+
+        <form id="intakeForm">
+            <div class="form-group">
+                <label for="name">Representative Name <span>*</span></label>
+                <input type="text" id="name" name="name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone Number (WhatsApp) <span>*</span></label>
+                <input type="tel" id="phone" name="phone" placeholder="e.g. 07xx xxxxxx" required>
+            </div>
+
+            <div class="form-group">
+                <label for="location">Physical Business Location/City <span>*</span></label>
+                <input type="text" id="location" name="location" placeholder="e.g. Kampala, Mbarara, Remote" required>
+            </div>
+
+            <div class="form-group">
+                <label for="website">Business Website (If any)</label>
+                <input type="url" id="website" name="website" placeholder="https://www.example.com">
+            </div>
+
+            <div class="form-group">
+                <label for="services">What products or services do you sell? <span>*</span></label>
+                <textarea id="services" name="services" rows="3" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="handle">Social Media Handle (TikTok/Instagram) <span>*</span></label>
+                <input type="text" id="handle" name="handle" placeholder="@username" required>
+            </div>
+
+            <div class="form-group">
+                <label>Monthly Business Revenue (UGX) <span>*</span></label>
+                <div class="radio-group" id="revenue-group">
+                    <label class="option-item"><input type="radio" name="revenue" value="1-5m" required> 1-5m</label>
+                    <label class="option-item"><input type="radio" name="revenue" value="5-10m"> 5-10m</label>
+                    <label class="option-item"><input type="radio" name="revenue" value="10-20m"> 10-20m</label>
+                    <div class="revenue-custom">
+                        <label for="custom_rev">Other Amount:</label>
+                        <input type="text" id="custom_rev" name="custom_rev" placeholder="Enter specific amount">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Preferred Content Frequency <span>*</span></label>
+                <div class="radio-group">
+                    <label class="option-item"><input type="radio" name="filming" value="1-day" required> 1 Content Day per week</label>
+                    <label class="option-item"><input type="radio" name="filming" value="2-days"> 2 Content Days per week</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="goals">Social Media Goals for 2026 <span>*</span></label>
+                <textarea id="goals" name="goals" rows="3" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Worked with a content team before? <span>*</span></label>
+                <div class="radio-group">
+                    <label class="option-item"><input type="radio" name="past_team" value="yes" required> Yes</label>
+                    <label class="option-item"><input type="radio" name="past_team" value="no"> No</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="extra">Anything else we should know? (optional)</label>
+                <textarea id="extra" name="extra" rows="2"></textarea>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submitBtn">SEND FORM</button>
+        </form>
+
+        <div class="footer-note">
+            <p>Contact: 0766 733766 | Kharolinesocials@gmail.com</p>
+            <p>&copy; 2026 Socials by Kharoline</p>
+        </div>
+    </div>
+
+    <div id="notification-overlay">
+        <div class="notification-card">
+            <h2>✓ RECEIVED</h2>
+            <p>Thank you for submitting your profile. Kharoline and the strategy team have been notified. We will get back to your business soon with a custom plan.</p>
+            <div class="close-notify-btn" onclick="closeNotification()">OKAY</div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== FIREBASE CONFIGURATION (exactly as admin panel) ====================
+        const firebaseConfig = {
+            apiKey: "AIzaSyBc6P7XpQz4fP7WqJk9LqGzUQy7hM8jN0",
+            authDomain: "kharolinesocials2.firebaseapp.com",
+            projectId: "kharolinesocials2",
+            storageBucket: "kharolinesocials2.appspot.com",
+            messagingSenderId: "123456789012",
+            appId: "1:123456789012:web:abcdef1234567890"
+        };
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
+        // DOM elements
+        const form = document.getElementById('intakeForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const validationErrorDiv = document.getElementById('validation-error');
+        const loadingDiv = document.getElementById('loading-status');
+        const overlay = document.getElementById('notification-overlay');
+        
+        // Helper: Get selected radio value from a group
+        function getSelectedRadioValue(name) {
+            const radios = document.getElementsByName(name);
+            for(let i = 0; i < radios.length; i++) {
+                if(radios[i].checked) return radios[i].value;
+            }
+            return '';
+        }
+        
+        // Helper: Validate all required fields (HTML5 plus custom for radio groups)
+        function isFormValid() {
+            // Check all required inputs and textareas
+            const requiredFields = form.querySelectorAll('[required]');
+            for(let field of requiredFields) {
+                if(field.type === 'radio') {
+                    // skip radio individual, handle group later
+                    continue;
+                }
+                if(!field.value.trim()) {
+                    return false;
+                }
+            }
+            // Check revenue radio group (or custom override)
+            const revenueSelected = getSelectedRadioValue('revenue');
+            const customRevenue = document.getElementById('custom_rev').value.trim();
+            if(!revenueSelected && !customRevenue) {
+                return false;
+            }
+            // Check filming frequency
+            if(!getSelectedRadioValue('filming')) return false;
+            // Check past team
+            if(!getSelectedRadioValue('past_team')) return false;
+            
+            return true;
+        }
+        
+        // Collect form data into object for Firestore
+        function collectFormData() {
+            let revenueValue = getSelectedRadioValue('revenue');
+            const customRevenue = document.getElementById('custom_rev').value.trim();
+            if(customRevenue !== "") {
+                revenueValue = customRevenue;
+            } else if(!revenueValue) {
+                revenueValue = "Not specified";
+            }
+            
+            return {
+                name: document.getElementById('name').value.trim(),
+                phone: document.getElementById('phone').value.trim(),
+                location: document.getElementById('location').value.trim(),
+                website: document.getElementById('website').value.trim() || "",
+                services: document.getElementById('services').value.trim(),
+                handle: document.getElementById('handle').value.trim(),
+                revenue: revenueValue,
+                filming: getSelectedRadioValue('filming'),
+                goals: document.getElementById('goals').value.trim(),
+                past_team: getSelectedRadioValue('past_team'),
+                extra: document.getElementById('extra').value.trim() || "",
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                source: "intake_form_web"
+            };
+        }
+        
+        // Reset form and UI after successful submission
+        function resetFormUI() {
+            form.reset();
+            submitBtn.disabled = false;
+            submitBtn.innerText = "SEND FORM";
+            submitBtn.style.opacity = "1";
+        }
+        
+        // Show success notification (only on Firebase success)
+        function showSuccessNotification() {
+            overlay.style.display = 'flex';
+        }
+        
+        function closeNotification() {
+            overlay.style.display = 'none';
+            resetFormUI();
+        }
+        
+        // Main submit handler: validate -> send to Firebase -> show success only when done
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Hide previous errors/status
+            validationErrorDiv.style.display = 'none';
+            loadingDiv.style.display = 'none';
+            
+            // Validate all required fields
+            if(!isFormValid()) {
+                validationErrorDiv.style.display = 'block';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                return;
+            }
+            
+            // Prepare data
+            const formData = collectFormData();
+            
+            // Disable button and show loading
+            submitBtn.disabled = true;
+            submitBtn.innerText = "SUBMITTING...";
+            loadingDiv.style.display = 'block';
+            
+            try {
+                // Store in Firestore collection 'intake_requests' (matches admin panel)
+                await db.collection('intake_requests').add(formData);
+                
+                // Success: hide loading, show success overlay
+                loadingDiv.style.display = 'none';
+                showSuccessNotification();
+                
+                // Note: form reset happens after user clicks OKAY in notification
+                // but we keep data cleared only after notification closed.
+                // We also keep button disabled until notification is closed.
+                // We'll attach a one-time close handler to fully reset.
+                // For now, just disable button and let closeNotification reset everything.
+                // But we must not allow double submit again until reset.
+                submitBtn.disabled = true;
+                submitBtn.innerText = "SENT ✓";
+            } catch (error) {
+                console.error("Firebase write error:", error);
+                loadingDiv.style.display = 'none';
+                validationErrorDiv.style.display = 'block';
+                validationErrorDiv.innerText = "❌ SERVER ERROR: Could not save data. Please try again later.";
+                validationErrorDiv.style.borderColor = "#d93025";
+                submitBtn.disabled = false;
+                submitBtn.innerText = "SEND FORM";
+            }
+        });
+        
+        // Attach close notification handler that also resets form fully
+        window.closeNotification = function() {
+            overlay.style.display = 'none';
+            // Reset form fields
+            form.reset();
+            // Re-enable submit button
+            submitBtn.disabled = false;
+            submitBtn.innerText = "SEND FORM";
+            submitBtn.style.opacity = "1";
+            // Clear any custom revenue field
+            document.getElementById('custom_rev').value = '';
+            // Hide any leftover error/loading
+            validationErrorDiv.style.display = 'none';
+            loadingDiv.style.display = 'none';
+        };
+        
+        // Optional: if user clicks outside overlay, also close? not needed, but we add a background click if desired
+        overlay.addEventListener('click', function(e) {
+            if(e.target === overlay) {
+                closeNotification();
+            }
+        });
+        
+        // Prefill helper: ensure custom revenue doesn't conflict with radio selection
+        const customRevenueInput = document.getElementById('custom_rev');
+        const revenueRadios = document.querySelectorAll('input[name="revenue"]');
+        customRevenueInput.addEventListener('input', function() {
+            if(this.value.trim() !== "") {
+                revenueRadios.forEach(radio => radio.checked = false);
+            }
+        });
+        revenueRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                if(this.checked) {
+                    customRevenueInput.value = "";
+                }
+            });
+        });
+        
+        console.log("Intake form ready — all submissions will be stored in Firebase 'intake_requests' collection.");
+    </script>
+</body>
+                                                            </html>
