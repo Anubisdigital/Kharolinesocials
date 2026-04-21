@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Kharoline Socials | SMM & Content Creation</title>
+    <link rel="icon" type="image/png" href="kh.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* STRICT DESIGN PROTOCOL: 
+           - ZERO BORDER RADIUS
+           - ZERO EMOJIS
+           - HIGH CONTRAST MONOCHROME 
+           - NO HORIZONTAL OVERFLOW
+        */
+
+        :root {
+            --black: #000000;
+            --white: #FFFFFF;
+            --gray-100: #F9F9F9;
+            --gray-200: #EEEEEE;
+            --gray-300: #CCCCCC;
+            --gray-800: #1A1A1A;
+            --baby-blue: #89CFF0;
+            --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            border-radius: 0 !important;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* CRITICAL FIX: Prevent horizontal overflow on the whole document */
+        html, body {
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+            width: 100%;
+            max-width: 100%;
+            position: relative;
+        }
+
+        body {
+            background-color: var(--white);
+            font-family: 'Inter', sans-serif;
+            color: var(--black);
+            line-height: 1.7;
+        }
+
+        /* ---------- TYPOGRAPHY ---------- */
+        h1, h2, h3, h4, .nav-logo-text {
+            font-family: 'Space Grotesk', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+        }
+
+        p {
+            font-size: 1rem;
+            font-weight: 400;
+        }
+
+        b, strong {
+            font-weight: 800;
+        }
+
+        i, em {
+            font-style: italic;
+        }
+
+        /* ---------- LAYOUT COMPONENTS ---------- */
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 40px;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        section {
+            padding: 120px 0;
+            border-bottom: 1px solid var(--gray-200);
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        /* ---------- NAVIGATION ---------- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 90px;
+            background: var(--white);
+            border-bottom: 2px solid var(--black);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-inner {
+            width: 100%;
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-container img {
+            height: 60px;
+            display: block;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .menu-trigger {
+            background: var(--black);
+            color: var(--white);
+            padding: 15px 45px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: var(--white);
+            min-width: 300px;
+            border: 2px solid var(--black);
+            box-shadow: 15px 15px 0px rgba(0,0,0,0.05);
+            z-index: 1001;
+        }
+
+        .dropdown-content a {
+            color: var(--black);
+            padding: 22px 30px;
+            text-decoration: none;
+            display: block;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            border-bottom: 1px solid var(--gray-200);
+            transition: var(--transition);
+        }
+
+        .dropdown-content a:hover {
+            background: var(--gray-100);
+            padding-left: 40px;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        /* ---------- HERO SECTION ---------- */
+        .hero {
+            height: 100vh;
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('kh.jpg');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--white);
+            padding-top: 90px;
+        }
+
+        .hero-title {
+            font-size: clamp(3rem, 12vw, 8rem);
+            font-weight: 900;
+            margin-bottom: 20px;
+        }
+
+        .hero-sub {
+            font-size: clamp(1rem, 2vw, 1.5rem);
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            font-weight: 300;
+            margin-bottom: 40px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .hero-btn {
+            display: inline-block;
+            padding: 18px 40px;
+            text-decoration: none;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: var(--transition);
+            font-size: 1rem;
+        }
+
+        .hero-btn-primary {
+            background: var(--white);
+            color: var(--black);
+            border: 2px solid var(--white);
+        }
+
+        .hero-btn-primary:hover {
+            background: transparent;
+            color: var(--white);
+        }
+
+        .hero-btn-secondary {
+            background: transparent;
+            color: var(--white);
+            border: 2px solid var(--baby-blue);
+        }
+
+        .hero-btn-secondary:hover {
+            background: rgba(137, 207, 240, 0.15);
+            border-color: var(--baby-blue);
+        }
+
+        /* ---------- TIKTOK VIDEO GALLERY (Horizontal Scroll) - RESPONSIVE & NOT TOO TALL ---------- */
+        .tiktok-gallery-section {
+            background: var(--gray-100);
+            padding: 80px 0;
+            border-bottom: 2px solid var(--black);
+        }
+
+        .section-label {
+            font-size: 0.85rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--gray-800);
+        }
+
+        .video-scroll-container {
+            width: 100%;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scrollbar-width: thin;
+            -webkit-overflow-scrolling: touch;
+            cursor: grab;
+            margin-top: 32px;
+        }
+
+        .video-scroll-container::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .video-scroll-container::-webkit-scrollbar-track {
+            background: var(--gray-200);
+        }
+
+        .video-scroll-container::-webkit-scrollbar-thumb {
+            background: var(--black);
+        }
+
+        .video-grid {
+            display: flex;
+            flex-direction: row;
+            gap: 28px;
+            width: max-content;
+            padding: 8px 0 16px 0;
+        }
+
+        /* VIDEO CARD - NOT TOO TALL, RESPONSIVE DIMENSIONS */
+        .video-card {
+            flex-shrink: 0;
+            width: min(280px, 75vw);
+            background: var(--white);
+            border: 2px solid var(--black);
+            transition: var(--transition);
+        }
+
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 9 / 16;
+            max-height: 460px;
+            background: #111;
+            overflow: hidden;
+        }
+
+        /* For extra tall screens, cap the height to avoid overwhelming */
+        @media (min-height: 900px) {
+            .video-wrapper {
+                max-height: 440px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .video-card {
+                width: min(240px, 70vw);
+            }
+            .video-wrapper {
+                max-height: 380px;
+            }
+        }
+
+        .video-wrapper iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .video-caption {
+            padding: 14px 12px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-top: 1px solid var(--gray-200);
+            color: var(--gray-800);
+            white-space: normal;
+            word-break: break-word;
+        }
+
+        /* ---------- PORTFOLIO ---------- */
+        .section-header {
+            margin-bottom: 80px;
+        }
+
+        .section-header h2 {
+            font-size: 3.5rem;
+            border-left: 12px solid var(--black);
+            padding-left: 25px;
+        }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(min(380px, 100%), 1fr));
+            gap: 40px;
+        }
+
+        .portfolio-item {
+            border: 3px solid var(--black);
+            padding: 30px;
+            background: var(--white);
+            transition: var(--transition);
+        }
+
+        .portfolio-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 20px 20px 0px var(--gray-200);
+        }
+
+        .portfolio-img {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            margin-bottom: 25px;
+            border: 1px solid var(--black);
+        }
+
+        .portfolio-item h3 {
+            font-size: 1.6rem;
+            margin-bottom: 15px;
+        }
+
+        .portfolio-desc {
+            margin-bottom: 20px;
+            color: var(--gray-800);
+        }
+
+        .portfolio-contact-info {
+            background: var(--gray-100);
+            padding: 15px;
+            border: 1px solid var(--gray-300);
+            margin-bottom: 25px;
+            font-size: 0.9rem;
+        }
+
+        .portfolio-link {
+            font-weight: 900;
+            color: var(--black);
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            display: inline-block;
+            border-bottom: 3px solid var(--black);
+            padding-bottom: 4px;
+        }
+
+        /* ========== KINETIC GALLERY (NO BORDER RADIUS, NO OVERFLOW) ========== */
+        .kinetic-gallery-container {
+            background: var(--black);
+            padding: 100px 0;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+
+        .kinetic-stage {
+            position: relative;
+            width: min(320px, 80vw);
+            aspect-ratio: 2 / 3;
+            perspective: 2000px;
+            overflow: visible;
+        }
+
+        .kinetic-image-wrapper {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            visibility: hidden;
+            transform-origin: bottom center;
+            will-change: transform, opacity;
+        }
+
+        .kinetic-image-wrapper.active {
+            visibility: visible;
+            opacity: 1;
+            animation: 
+                kineticEntrance 1.2s cubic-bezier(0.2, 0.5, 0.1, 1) forwards,
+                kineticExit 0.4s 4.4s cubic-bezier(0.9, 0, 0.5, 1) forwards;
+        }
+
+        @keyframes kineticEntrance {
+            0% { 
+                transform: translateX(150%) skewX(-25deg) scaleX(1.4); 
+            }
+            40% { 
+                transform: translateX(0) skewX(0deg) scaleX(1); 
+            }
+            55% { 
+                transform: translateX(0) skewX(18deg) scaleX(1.1); 
+            }
+            70% { 
+                transform: translateX(0) skewX(-8deg) scaleX(0.95); 
+            }
+            85% { 
+                transform: translateX(0) skewX(4deg) scaleX(1.02); 
+            }
+            100% { 
+                transform: translateX(0) skewX(0deg) scaleX(1); 
+            }
+        }
+
+        @keyframes kineticExit {
+            0% { 
+                transform: translateX(0) skewX(0); 
+                opacity: 1;
+            }
+            100% { 
+                transform: translateX(-150%) skewX(30deg) scaleX(1.5); 
+                opacity: 0;
+            }
+        }
+
+        .kinetic-card {
+            width: 100%;
+            height: 100%;
+            background: #111;
+            border: 1px solid #333;
+            overflow: hidden;
+        }
+
+        .kinetic-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        .kinetic-data-tag {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0,0,0,0.85);
+            color: var(--white);
+            padding: 4px 10px;
+            font-size: 10px;
+            border: 1px solid var(--gray-300);
+            text-transform: uppercase;
+            z-index: 10;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        /* ---------- THUMBNAILS (HORIZONTAL SCROLL, FULL COLOR, NO GRAYSCALE) ---------- */
+        .thumb-section {
+            background: var(--gray-100);
+            padding: 60px 0;
+            border-bottom: 2px solid var(--black);
+            overflow-x: hidden;
+        }
+
+        .thumb-scroll-container {
+            width: 100%;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scrollbar-width: thin;
+            -webkit-overflow-scrolling: touch;
+            cursor: grab;
+        }
+
+        .thumb-scroll-container::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .thumb-scroll-container::-webkit-scrollbar-track {
+            background: var(--gray-200);
+        }
+
+        .thumb-scroll-container::-webkit-scrollbar-thumb {
+            background: var(--black);
+        }
+
+        .thumb-grid {
+            display: flex;
+            flex-direction: row;
+            gap: 15px;
+            width: max-content;
+            padding: 8px 0 12px 0;
+        }
+
+        .thumb-box {
+            flex-shrink: 0;
+            width: 100px;
+            aspect-ratio: 1;
+            cursor: pointer;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+            background: var(--white);
+            transition: var(--transition);
+        }
+
+        @media (max-width: 640px) {
+            .thumb-box {
+                width: 80px;
+            }
+        }
+
+        .thumb-box:hover {
+            border-color: var(--black);
+        }
+
+        .thumb-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: none;
+            transition: var(--transition);
+        }
+
+        .thumb-box:hover img {
+            transform: scale(1.1);
+        }
+
+        .thumb-id {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: var(--black);
+            color: var(--white);
+            font-size: 0.6rem;
+            text-align: center;
+            padding: 3px 0;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        /* ---------- PRICING / INFO PANELS ---------- */
+        .pricing-section {
+            background: var(--black);
+            color: var(--white);
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 60px;
+        }
+
+        .pricing-card {
+            border-left: 8px solid var(--white);
+            padding: 40px;
+        }
+
+        .pricing-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: var(--white);
+        }
+
+        .pricing-card ul {
+            list-style: none;
+            margin-bottom: 30px;
+        }
+
+        .pricing-card li {
+            margin-bottom: 15px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .pricing-card li::before {
+            content: "—";
+            position: absolute;
+            left: 0;
+            color: var(--white);
+        }
+
+        .price-tag {
+            font-size: 2.2rem;
+            font-weight: 900;
+            border-top: 1px solid #333;
+            padding-top: 20px;
+            display: block;
+        }
+
+        /* ---------- FOOTER ---------- */
+        .master-footer {
+            background: var(--black);
+            color: var(--white);
+            padding: 120px 0 60px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 80px;
+            margin-bottom: 80px;
+        }
+
+        .footer-col h4 {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--white);
+            display: inline-block;
+            padding-bottom: 8px;
+        }
+
+        .footer-brand img {
+            height: 80px;
+            margin-bottom: 30px;
+        }
+
+        .footer-contact-link {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 1.4rem;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 15px;
+            transition: var(--transition);
+        }
+
+        .footer-contact-link:hover {
+            opacity: 0.6;
+        }
+
+        .footer-nav-links {
+            list-style: none;
+        }
+
+        .footer-nav-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-nav-links a {
+            color: var(--gray-300);
+            text-decoration: none;
+            text-transform: uppercase;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .footer-nav-links a:hover {
+            color: var(--white);
+        }
+
+        .copyright-area {
+            text-align: center;
+            border-top: 1px solid #222;
+            padding-top: 50px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.5;
+        }
+
+        /* ---------- LIGHTBOX ---------- */
+        #lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.98);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            cursor: zoom-out;
+        }
+
+        #lightbox img {
+            max-width: 90%;
+            max-height: 85%;
+            border: 4px solid var(--white);
+        }
+
+        /* ---------- RESPONSIVE ---------- */
+        @media (max-width: 1024px) {
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+            .hero-title { font-size: 5rem; }
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 0 20px; }
+            .nav-inner { padding: 0 20px; }
+            .menu-trigger { padding: 12px 25px; font-size: 0.9rem; }
+            .hero-title { font-size: 3.5rem; }
+            .footer-grid { grid-template-columns: 1fr; gap: 50px; }
+            .pricing-card { padding: 30px; }
+            .section-header h2 { font-size: 2.2rem; }
+            .kinetic-stage { width: min(280px, 75vw); }
+            .hero-buttons { gap: 16px; }
+            .hero-btn { padding: 14px 28px; font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="nav-inner">
+            <div class="logo-container">
+                <img src="kh.png" alt="Kharoline Socials">
+            </div>
+            <div class="dropdown">
+                <button class="menu-trigger">EXPLORE</button>
+                <div class="dropdown-content">
+                    <a href="index.html">HOME</a>
+                    <a href="location.html">LOCATION</a>
+                    <a href="contact.html">CONTACT</a>
+                    <a href="let.html">LET'S WORK</a>
+                    <a href="buy.html">BUY PRODUCTS</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <p class="hero-sub">Architecture of Attention</p>
+            <h1 class="hero-title">DIGITAL IMPACT</h1>
+            <div class="hero-buttons">
+                <a href="buy.html" class="hero-btn hero-btn-secondary">BUY PRODUCTS</a>
+                <a href="let.html" class="hero-btn hero-btn-primary">LET'S WORK</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- TIKTOK VIDEO GALLERY: two specific videos, horizontal scroll, responsive height -->
+    <div class="tiktok-gallery-section">
+        <div class="container">
+            <div class="section-label">LATEST FROM TIKTOK</div>
+            <div class="video-scroll-container" id="videoScrollContainer">
+                <div class="video-grid" id="tiktokVideoGrid">
+                    <!-- Two videos injected dynamically: first video (main), second video (scroll right) -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section id="portfolio">
+        <div class="container">
+            <div class="section-header">
+                <h2>PORTFOLIO HEADLINERS</h2>
+            </div>
+
+            <div class="portfolio-grid">
+                <article class="portfolio-item">
+                    <img src="hs.jpg" class="portfolio-img" alt="Highland Perfumes">
+                    <h3>Highland Perfumes</h3>
+                    <p class="portfolio-desc">Expert curation of fragrance aesthetics. Developed specific content hooks to increase brand recall and foot traffic to their physical location.</p>
+                    <div class="portfolio-contact-info">
+                        <i><b>Location: Hanifah Tower, Kampala</b></i><br>
+                        <i>Status: Active Partner</i>
+                    </div>
+                    <a href="https://www.tiktok.com/@highland.perfumes?_r=1&_t=ZS-95fyCEWLF12" class="portfolio-link" target="_blank">View TikTok Campaign</a>
+                </article>
+
+                <article class="portfolio-item">
+                    <img src="s4.jpg" class="portfolio-img" alt="Sweet Impressions">
+                    <h3>Sweet Impressions by Fatty</h3>
+                    <p class="portfolio-desc">High-engagement baking content. Strategic promotion of wedding cakes, birthday cakes, and classroom enrollment for aspiring bakers.</p>
+                    <div class="portfolio-contact-info">
+                        <i><b>Contact: +256 704 647000</b></i><br>
+                        <i>Service: Full Content Strategy</i>
+                    </div>
+                    <a href="https://www.tiktok.com/@sweet.impressions4?_r=1&_t=ZS-95fy7TKyi3g" class="portfolio-link" target="_blank">View TikTok Campaign</a>
+                </article>
+
+                <article class="portfolio-item">
+                    <img src="va.jpg" class="portfolio-img" alt="Valley View Resort">
+                    <h3>Valley View Resort Seeta</h3>
+                    <p class="portfolio-desc">Hospitality showcase in Mukono. Highlighting sauna services, private accommodation, and lush gardens via lifestyle videography.</p>
+                    <div class="portfolio-contact-info">
+                        <i><b>Location: Seeta, Mukono</b></i><br>
+                        <i>Phone: +256 752 929230</i>
+                    </div>
+                    <a href="https://www.tiktok.com/@valley.view.resort_seeta?_r=1&_t=ZS-95fy2hoGtUr" class="portfolio-link" target="_blank">View TikTok Campaign</a>
+                </article>
+
+                <article class="portfolio-item">
+                    <img src="ry.jpg" class="portfolio-img" alt="Rhea Beauty">
+                    <h3>Rhea Beauty</h3>
+                    <p class="portfolio-desc">Natural skincare authority. Strategic positioning of Rhea Shea Butter for stretch marks and hair growth results.</p>
+                    <div class="portfolio-contact-info">
+                        <i><b>Contact: 0791080054</b></i><br>
+                        <i>Focus: Beauty products</i>
+                    </div>
+                    <a href="https://www.tiktok.com/@rheabeauty3?_r=1&_t=ZS-95fweOrepDI" class="portfolio-link" target="_blank">View TikTok Campaign</a>
+                </article>
+
+                <article class="portfolio-item">
+                    <img src="at.jpg" class="portfolio-img" alt="Aangan Restaurant">
+                    <h3>Aangan Restaurant</h3>
+                    <p class="portfolio-desc">Premier Indian and Chinese dining in Kampala. Scaling visibility for 'Power Food Combos' and large-scale event hosting.</p>
+                    <div class="portfolio-contact-info">
+                        <i><b>Location: Lugogo Bypass, Kampala</b></i><br>
+                        <i>Focus: Food Content & SMM</i>
+                    </div>
+                    <a href="https://www.tiktok.com/@aanganrestaurant?_r=1&_t=ZS-95fwbtHU9A4" class="portfolio-link" target="_blank">View TikTok Campaign</a>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- KINETIC GALLERY -->
+    <div id="gallery" class="kinetic-gallery-container">
+        <div class="kinetic-stage" id="kineticStage"></div>
+    </div>
+
+    <!-- THUMBNAIL SECTION -->
+    <div class="thumb-section">
+        <div class="container">
+            <div class="thumb-scroll-container">
+                <div class="thumb-grid" id="thumbGrid"></div>
+            </div>
+        </div>
+    </div>
+
+    <section id="pricing" class="pricing-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 style="color: white; border-color: white;">SERVICE BLUEPRINTS</h2>
+            </div>
+            
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <h3>Influencer Management</h3>
+                    <ul>
+                        <li>Full audit of personal digital presence</li>
+                        <li>High-conversion brand partnership strategy</li>
+                        <li>Creation of custom professional Media Kit</li>
+                        <li>Quarterly performance analysis</li>
+                    </ul>
+                    <span class="price-tag">UGX 400,000 / MO</span>
+                </div>
+
+                <div class="pricing-card">
+                    <h3>Content Creation Offer</h3>
+                    <ul>
+                        <li>Platform Focus: TikTok Dominance</li>
+                        <li>24 Professionally produced videos</li>
+                        <li>Hook development and scripting</li>
+                        <li>Trending audio integration</li>
+                    </ul>
+                    <span class="price-tag">UGX 600,000 / TOTAL</span>
+                </div>
+
+                <div class="pricing-card">
+                    <h3>Full SMM Strategy</h3>
+                    <ul>
+                        <li>Multi-platform: TikTok and Instagram</li>
+                        <li>Two on-site content production days per week</li>
+                        <li>Full engagement management</li>
+                        <li>Ad campaign integration</li>
+                    </ul>
+                    <span class="price-tag">UGX 800,000 / MO</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="master-footer" id="contact">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col footer-brand">
+                    <img src="kh.png" alt="Logo">
+                    <p>Kharoline Socials is a high-performance content laboratory specializing in the architecture of attention. We build digital infrastructures that convert scrolling into results.</p>
+                </div>
+
+                <div class="footer-col">
+                    <h4>CONTACT GATEWAY</h4>
+                    <a href="mailto:kharolinesocials@gmail.com" class="footer-contact-link">KHAROLINESOCIALS@GMAIL.COM</a>
+                    <a href="tel:+256766733766" class="footer-contact-link">+256 766 733766</a>
+                    <p style="margin-top: 20px; opacity: 0.6;">Remote Operations<br>Kampala, Uganda</p>
+                </div>
+
+                <div class="footer-col">
+                    <h4>NAVIGATION</h4>
+                    <ul class="footer-nav-links">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="location.html">Location</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="copyright-area">
+                <p>© 2026 KHAROLINE SOCIALS. NO REPRODUCTION WITHOUT AUTHORIZATION.</p>
+                <p style="font-size: 10px; margin-top: 10px;">DESIGNED FOR MAXIMUM DIGITAL IMPACT.</p>
+            </div>
+        </div>
+    </footer>
+
+    <div id="lightbox" onclick="closeLightbox()">
+        <img id="lightbox-img" src="" alt="Enlarged Image">
+    </div>
+
+    <script>
+        // ----- TIKTOK VIDEO GALLERY: EXACT TWO VIDEOS (first URL + second URL when scroll right) -----
+        // Video IDs extracted from provided TikTok links:
+        // First video: 7620082859377773842 | Second video: 7610498930941644040
+        const tiktokVideos = [
+            {
+                embedUrl: "https://www.tiktok.com/embed/v2/7620082859377773842",
+                caption: "FEATURED: SOCIALS BY KHAROLINE · MAIN MOMENTUM"
+            },
+            {
+                embedUrl: "https://www.tiktok.com/embed/v2/7610498930941644040",
+                caption: "EXCLUSIVE REEL: SECOND WAVE · SCROLL RIGHT"
+            }
+        ];
+
+        const videoGrid = document.getElementById('tiktokVideoGrid');
+        
+        function buildVideoGallery() {
+            videoGrid.innerHTML = '';
+            tiktokVideos.forEach((video) => {
+                const videoCard = document.createElement('div');
+                videoCard.className = 'video-card';
+                videoCard.innerHTML = `
+                    <div class="video-wrapper">
+                        <iframe src="${video.embedUrl}" frameborder="0" allowfullscreen loading="lazy"></iframe>
+                    </div>
+                    <div class="video-caption">${video.caption}</div>
+                `;
+                videoGrid.appendChild(videoCard);
+            });
+        }
+
+        // Enable horizontal drag-scroll for TikTok videos
+        const videoScrollContainer = document.getElementById('videoScrollContainer');
+        if (videoScrollContainer) {
+            let isDown = false;
+            let startX;
+            let scrollLeft;
+            
+            videoScrollContainer.addEventListener('mousedown', (e) => {
+                isDown = true;
+                startX = e.pageX - videoScrollContainer.offsetLeft;
+                scrollLeft = videoScrollContainer.scrollLeft;
+                videoScrollContainer.style.cursor = 'grabbing';
+            });
+            videoScrollContainer.addEventListener('mouseleave', () => {
+                isDown = false;
+                videoScrollContainer.style.cursor = 'grab';
+            });
+            videoScrollContainer.addEventListener('mouseup', () => {
+                isDown = false;
+                videoScrollContainer.style.cursor = 'grab';
+            });
+            videoScrollContainer.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x = e.pageX - videoScrollContainer.offsetLeft;
+                const walk = (x - startX) * 1.5;
+                videoScrollContainer.scrollLeft = scrollLeft - walk;
+            });
+            videoScrollContainer.style.cursor = 'grab';
+        }
+
+        // ----- KINETIC GALLERY (Physics animation, zero border radius) -----
+        const kineticImages = [
+            'kh.jpg', 's4.jpg', 'at.jpg', 'kh3.jpg', 'kh4.jpg',
+            'kh5.jpg', 'kh6.jpg', 'ry.jpg', 'kh8.jpg', 'hs.jpg'
+        ];
+
+        const stage = document.getElementById('kineticStage');
+        let kineticCursor = 0;
+        let kineticSlides = [];
+
+        kineticImages.forEach((src, idx) => {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'kinetic-image-wrapper';
+            wrapper.innerHTML = `
+                <div class="kinetic-card">
+                    <div class="kinetic-data-tag">FRAME_${(idx+1).toString().padStart(2, '0')}</div>
+                    <img src="${src}" onerror="this.src='https://via.placeholder.com/320x480/111/FFFFFF?text=NO_ASSET'">
+                </div>
+            `;
+            stage.appendChild(wrapper);
+            kineticSlides.push(wrapper);
+        });
+
+        function runKineticSequence() {
+            if (kineticSlides.length === 0) return;
+            kineticSlides.forEach(slide => slide.classList.remove('active'));
+            const currentSlide = kineticSlides[kineticCursor];
+            if (currentSlide) {
+                void currentSlide.offsetWidth;
+                currentSlide.classList.add('active');
+            }
+            kineticCursor = (kineticCursor + 1) % kineticImages.length;
+            setTimeout(runKineticSequence, 4800);
+        }
+        
+        // ----- THUMBNAIL SECTION: HORIZONTAL SCROLL, FULL COLOR, LIGHTBOX -----
+        const thumbImages = [
+            'kh.jpg', 'he.jpg', 'at.jpg', 'kh3.jpg', 'kh4.jpg',
+            'kh5.jpg', 'kh6.jpg', 'ry.jpg', 'kh8.jpg', 'hs.jpg'
+        ];
+        
+        const thumbGridContainer = document.getElementById('thumbGrid');
+        
+        function buildThumbnails() {
+            thumbGridContainer.innerHTML = '';
+            thumbImages.forEach((imgSrc, idx) => {
+                const thumbBox = document.createElement('div');
+                thumbBox.className = 'thumb-box';
+                let label = imgSrc.toUpperCase();
+                if (imgSrc === 'kh.jpg') label = 'KH.JPG';
+                else label = imgSrc.replace('.jpg', '.JPG').toUpperCase();
+                
+                thumbBox.innerHTML = `
+                    <img src="${imgSrc}" alt="${imgSrc}" onerror="this.src='https://via.placeholder.com/100/CCC/000?text=ERR'">
+                    <div class="thumb-id">${label}</div>
+                `;
+                thumbBox.onclick = (function(src) {
+                    return function() { openLightbox(src); };
+                })(imgSrc);
+                thumbGridContainer.appendChild(thumbBox);
+            });
+        }
+        
+        // Enable horizontal drag-scroll for thumbnail container
+        const thumbScrollContainer = document.querySelector('.thumb-scroll-container');
+        if (thumbScrollContainer) {
+            let isDown = false;
+            let startX;
+            let scrollLeft;
+            
+            thumbScrollContainer.addEventListener('mousedown', (e) => {
+                isDown = true;
+                startX = e.pageX - thumbScrollContainer.offsetLeft;
+                scrollLeft = thumbScrollContainer.scrollLeft;
+                thumbScrollContainer.style.cursor = 'grabbing';
+            });
+            thumbScrollContainer.addEventListener('mouseleave', () => {
+                isDown = false;
+                thumbScrollContainer.style.cursor = 'grab';
+            });
+            thumbScrollContainer.addEventListener('mouseup', () => {
+                isDown = false;
+                thumbScrollContainer.style.cursor = 'grab';
+            });
+            thumbScrollContainer.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x = e.pageX - thumbScrollContainer.offsetLeft;
+                const walk = (x - startX) * 1.5;
+                thumbScrollContainer.scrollLeft = scrollLeft - walk;
+            });
+            thumbScrollContainer.style.cursor = 'grab';
+        }
+        
+        // Lightbox functions
+        function openLightbox(src) {
+            const lightbox = document.getElementById('lightbox');
+            const img = document.getElementById('lightbox-img');
+            img.src = src;
+            lightbox.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Smooth anchor scrolling for internal links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                const target = document.querySelector(targetId);
+                if (target) {
+                    e.preventDefault();
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+        
+        // Dropdown close logic on outside click
+        window.onclick = function(event) {
+            if (!event.target.matches('.menu-trigger')) {
+                const dropdowns = document.getElementsByClassName("dropdown-content");
+                for (let i = 0; i < dropdowns.length; i++) {
+                    const openDropdown = dropdowns[i];
+                    if (openDropdown.style.display === "block") {
+                        openDropdown.style.display = "none";
+                    }
+                }
+            }
+        };
+        
+        // Initialize all components
+        document.addEventListener('DOMContentLoaded', () => {
+            buildVideoGallery();
+            buildThumbnails();
+            runKineticSequence();
+        });
+    </script>
+</body>
+</html>
