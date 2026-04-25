@@ -1,0 +1,1041 @@
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Kharoline Socials | Business Directory</title>
+    <link rel="icon" type="image/png" href="kh.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Firebase & Algolia SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/algoliasearch@4.23.3/dist/algoliasearch-lite.umd.js"></script>
+
+    <style>
+        /* STRICT DESIGN PROTOCOL: 
+           - ZERO BORDER RADIUS
+           - ZERO EMOJIS
+           - HIGH CONTRAST MONOCHROME 
+           - NO HORIZONTAL OVERFLOW
+        */
+
+        :root {
+            --black: #000000;
+            --white: #FFFFFF;
+            --gray-100: #F9F9F9;
+            --gray-200: #EEEEEE;
+            --gray-300: #CCCCCC;
+            --gray-800: #1A1A1A;
+            --baby-blue: #89CFF0;
+            --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            border-radius: 0 !important;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        html, body {
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+            width: 100%;
+            max-width: 100%;
+            position: relative;
+        }
+
+        body {
+            background-color: var(--white);
+            font-family: 'Inter', sans-serif;
+            color: var(--black);
+            line-height: 1.7;
+        }
+
+        /* TYPOGRAPHY */
+        h1, h2, h3, h4, .nav-logo-text {
+            font-family: 'Space Grotesk', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+        }
+
+        p {
+            font-size: 1rem;
+            font-weight: 400;
+        }
+
+        b, strong {
+            font-weight: 800;
+        }
+
+        /* LAYOUT COMPONENTS */
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 40px;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        section {
+            padding: 100px 0;
+            border-bottom: 1px solid var(--gray-200);
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        /* NAVIGATION - Hamburger menu, longer search bar */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: var(--white);
+            border-bottom: 2px solid var(--black);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            padding: 16px 0;
+        }
+
+        .nav-inner {
+            width: 100%;
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 32px;
+        }
+
+        /* SEARCH BAR - significantly longer, spans most of the width */
+        .nav-search {
+            flex: 4;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 16px 24px;
+            font-size: 1rem;
+            font-weight: 500;
+            font-family: 'Inter', monospace;
+            border: 2px solid var(--black);
+            background: var(--white);
+            color: var(--black);
+            transition: var(--transition);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .search-input:focus {
+            outline: none;
+            background: var(--gray-100);
+            border-color: var(--baby-blue);
+        }
+
+        .search-input::placeholder {
+            color: var(--gray-300);
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        /* HAMBURGER MENU (three horizontal lines) - replaces EXPLORE button */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .menu-trigger {
+            background: var(--black);
+            color: var(--white);
+            padding: 12px 20px;
+            font-weight: 700;
+            font-size: 1.8rem;
+            line-height: 1;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: monospace;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: var(--white);
+            min-width: 260px;
+            border: 2px solid var(--black);
+            box-shadow: 15px 15px 0px rgba(0,0,0,0.05);
+            z-index: 1001;
+        }
+
+        .dropdown-content a {
+            color: var(--black);
+            padding: 16px 24px;
+            text-decoration: none;
+            display: block;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            border-bottom: 1px solid var(--gray-200);
+            transition: var(--transition);
+        }
+
+        .dropdown-content a:hover {
+            background: var(--gray-100);
+            padding-left: 32px;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        /* HERO SECTION - tailored for business directory */
+        .hero {
+            height: 85vh;
+            min-height: 600px;
+            background: linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)), url('sh.jpg');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--white);
+            padding-top: 90px;
+        }
+
+        .hero-title {
+            font-size: clamp(3rem, 12vw, 7rem);
+            font-weight: 900;
+            margin-bottom: 20px;
+        }
+
+        .hero-sub {
+            font-size: clamp(1rem, 2vw, 1.4rem);
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            font-weight: 400;
+            margin-bottom: 20px;
+        }
+
+        .hero-desc {
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto 40px auto;
+            opacity: 0.9;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .hero-btn {
+            display: inline-block;
+            padding: 18px 40px;
+            text-decoration: none;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: var(--transition);
+            font-size: 1rem;
+        }
+
+        .hero-btn-primary {
+            background: var(--white);
+            color: var(--black);
+            border: 2px solid var(--white);
+        }
+
+        .hero-btn-primary:hover {
+            background: transparent;
+            color: var(--white);
+        }
+
+        .hero-btn-secondary {
+            background: transparent;
+            color: var(--white);
+            border: 2px solid var(--baby-blue);
+        }
+
+        .hero-btn-secondary:hover {
+            background: rgba(137, 207, 240, 0.15);
+            border-color: var(--baby-blue);
+        }
+
+        /* FILTER BAR */
+        .filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 24px;
+            margin-bottom: 60px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--black);
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-label {
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+
+        .category-dropdown {
+            padding: 12px 24px;
+            background: var(--white);
+            border: 2px solid var(--black);
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            text-transform: uppercase;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .business-count {
+            font-weight: 700;
+            background: var(--gray-100);
+            padding: 8px 18px;
+            border: 1px solid var(--gray-300);
+        }
+
+        /* BUSINESS GRID */
+        .businesses-section {
+            background: var(--white);
+        }
+
+        .section-header {
+            margin-bottom: 60px;
+        }
+
+        .section-header h2 {
+            font-size: 3rem;
+            border-left: 12px solid var(--black);
+            padding-left: 25px;
+        }
+
+        .businesses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(min(360px, 100%), 1fr));
+            gap: 48px;
+        }
+
+        .business-card {
+            border: 3px solid var(--black);
+            background: var(--white);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .business-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 18px 18px 0px var(--gray-200);
+        }
+
+        .business-img {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            background: var(--gray-100);
+            border-bottom: 2px solid var(--black);
+        }
+
+        .business-info {
+            padding: 28px 24px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .business-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            letter-spacing: -0.01em;
+        }
+
+        .business-category {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: var(--gray-200);
+            display: inline-block;
+            padding: 4px 12px;
+            margin-bottom: 16px;
+            border: 1px solid var(--gray-300);
+        }
+
+        .business-desc {
+            margin-bottom: 20px;
+            color: var(--gray-800);
+            font-size: 0.9rem;
+        }
+
+        .business-contact {
+            background: var(--gray-100);
+            padding: 14px;
+            border: 1px solid var(--gray-300);
+            margin: 12px 0;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .business-contact p {
+            margin: 6px 0;
+        }
+
+        .business-link {
+            font-weight: 900;
+            color: var(--black);
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            display: inline-block;
+            border-bottom: 3px solid var(--black);
+            padding-bottom: 4px;
+            margin-top: 8px;
+            align-self: flex-start;
+        }
+
+        .business-link:hover {
+            color: var(--baby-blue);
+            border-bottom-color: var(--baby-blue);
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 80px 20px;
+            background: var(--gray-100);
+            border: 2px solid var(--black);
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* KINETIC GALLERY (auto-scroll) */
+        .kinetic-gallery-container {
+            background: var(--black);
+            padding: 100px 0;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+
+        .kinetic-stage {
+            position: relative;
+            width: min(320px, 80vw);
+            aspect-ratio: 2 / 3;
+            perspective: 2000px;
+            overflow: visible;
+        }
+
+        .kinetic-image-wrapper {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            visibility: hidden;
+            transform-origin: bottom center;
+            will-change: transform, opacity;
+        }
+
+        .kinetic-image-wrapper.active {
+            visibility: visible;
+            opacity: 1;
+            animation: 
+                kineticEntrance 1.2s cubic-bezier(0.2, 0.5, 0.1, 1) forwards,
+                kineticExit 0.4s 4.4s cubic-bezier(0.9, 0, 0.5, 1) forwards;
+        }
+
+        @keyframes kineticEntrance {
+            0% { transform: translateX(150%) skewX(-25deg) scaleX(1.4); }
+            40% { transform: translateX(0) skewX(0deg) scaleX(1); }
+            55% { transform: translateX(0) skewX(18deg) scaleX(1.1); }
+            70% { transform: translateX(0) skewX(-8deg) scaleX(0.95); }
+            85% { transform: translateX(0) skewX(4deg) scaleX(1.02); }
+            100% { transform: translateX(0) skewX(0deg) scaleX(1); }
+        }
+
+        @keyframes kineticExit {
+            0% { transform: translateX(0) skewX(0); opacity: 1; }
+            100% { transform: translateX(-150%) skewX(30deg) scaleX(1.5); opacity: 0; }
+        }
+
+        .kinetic-card {
+            width: 100%;
+            height: 100%;
+            background: #111;
+            border: 1px solid #333;
+            overflow: hidden;
+        }
+
+        .kinetic-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        .kinetic-data-tag {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0,0,0,0.85);
+            color: var(--white);
+            padding: 4px 10px;
+            font-size: 10px;
+            border: 1px solid var(--gray-300);
+            text-transform: uppercase;
+            z-index: 10;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .thumb-section {
+            background: var(--gray-100);
+            padding: 60px 0;
+            border-bottom: 2px solid var(--black);
+            overflow-x: hidden;
+        }
+
+        .thumb-scroll-container {
+            width: 100%;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scrollbar-width: thin;
+            -webkit-overflow-scrolling: touch;
+            cursor: grab;
+        }
+
+        .thumb-scroll-container::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .thumb-grid {
+            display: flex;
+            flex-direction: row;
+            gap: 15px;
+            width: max-content;
+            padding: 8px 0 12px 0;
+        }
+
+        .thumb-box {
+            flex-shrink: 0;
+            width: 100px;
+            aspect-ratio: 1;
+            cursor: pointer;
+            border: 2px solid transparent;
+            overflow: hidden;
+            background: var(--white);
+            transition: var(--transition);
+        }
+
+        .thumb-box:hover {
+            border-color: var(--black);
+        }
+
+        .thumb-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .thumb-box:hover img {
+            transform: scale(1.1);
+        }
+
+        .thumb-id {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: var(--black);
+            color: var(--white);
+            font-size: 0.6rem;
+            text-align: center;
+            padding: 3px 0;
+            font-weight: 700;
+        }
+
+        /* FOOTER */
+        .master-footer {
+            background: var(--black);
+            color: var(--white);
+            padding: 100px 0 60px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 80px;
+            margin-bottom: 80px;
+        }
+
+        .footer-col h4 {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--white);
+            display: inline-block;
+            padding-bottom: 8px;
+        }
+
+        .footer-brand img {
+            height: 70px;
+            margin-bottom: 30px;
+        }
+
+        .footer-contact-link {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 1.3rem;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 15px;
+            transition: var(--transition);
+        }
+
+        .footer-contact-link:hover {
+            opacity: 0.6;
+        }
+
+        .footer-nav-links {
+            list-style: none;
+        }
+
+        .footer-nav-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-nav-links a {
+            color: var(--gray-300);
+            text-decoration: none;
+            text-transform: uppercase;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .footer-nav-links a:hover {
+            color: var(--white);
+        }
+
+        .copyright-area {
+            text-align: center;
+            border-top: 1px solid #222;
+            padding-top: 50px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.6;
+        }
+
+        #lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.98);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            cursor: zoom-out;
+        }
+
+        #lightbox img {
+            max-width: 90%;
+            max-height: 85%;
+            border: 4px solid var(--white);
+        }
+
+        @media (max-width: 1024px) {
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+            .hero-title { font-size: 4rem; }
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 0 20px; }
+            .nav-inner { padding: 0 20px; flex-wrap: wrap; gap: 16px; }
+            .nav-search { max-width: 100%; width: 100%; order: 1; }
+            .dropdown { order: 2; }
+            nav { padding: 12px 0; }
+            .hero { height: auto; padding: 120px 0 80px; }
+            .filter-bar { flex-direction: column; align-items: stretch; }
+            .section-header h2 { font-size: 2rem; }
+            .businesses-grid { gap: 30px; }
+            .footer-grid { grid-template-columns: 1fr; gap: 50px; }
+            .kinetic-stage { width: min(280px, 75vw); }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="nav-inner">
+        <div class="nav-search">
+            <input type="text" id="globalSearchInput" class="search-input" placeholder="SEARCH BUSINESSES (e.g., perfume, cake, 1 million)" autocomplete="off">
+        </div>
+        <div class="dropdown">
+            <button class="menu-trigger">☰</button>
+            <div class="dropdown-content">
+                <a href="index.html">HOME</a>
+                <a href="location.html">LOCATION</a>
+                <a href="contact.html">CONTACT</a>
+                <a href="let.html">LET'S WORK</a>
+                <a href="buy.html">BUSINESS DIRECTORY</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<section class="hero">
+    <div class="container">
+        <p class="hero-sub">PARTNER BUSINESS DIRECTORY</p>
+        <h1 class="hero-title">TRUSTED BUSINESS</h1>
+        <p class="hero-desc">Explore verified businesses we collaborate with. Find contact details, locations, and direct links to their social campaigns.</p>
+        <div class="hero-buttons">
+            <a href="#businessCatalog" class="hero-btn hero-btn-primary">BROWSE DIRECTORY</a>
+        </div>
+    </div>
+</section>
+
+<div class="kinetic-gallery-container" id="kineticGallery">
+    <div class="kinetic-stage" id="kineticStage"></div>
+</div>
+
+<div class="thumb-section">
+    <div class="container">
+        <div class="thumb-scroll-container">
+            <div class="thumb-grid" id="thumbGrid"></div>
+        </div>
+    </div>
+</div>
+
+<section id="businessCatalog" class="businesses-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>FEATURED BUSINESSES</h2>
+        </div>
+        <div class="filter-bar">
+            <div class="filter-controls">
+                <span class="filter-label">FILTER BY SERVICE:</span>
+                <select id="categoryFilterSelect" class="category-dropdown">
+                    <option value="all">ALL CATEGORIES</option>
+                </select>
+            </div>
+            <div class="business-count" id="businessCountDisplay">LOADING BUSINESSES</div>
+        </div>
+        <div id="businessesGridContainer" class="businesses-grid">
+            <div class="no-results">LOADING DIRECTORY...</div>
+        </div>
+    </div>
+</section>
+
+<footer class="master-footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-col footer-brand">
+                <img src="kh.png" alt="Kharoline Socials">
+                <p>Kharoline Socials connects you with high-impact local businesses. We curate, verify and amplify.</p>
+            </div>
+            <div class="footer-col">
+                <h4>CONTACT GATEWAY</h4>
+                <a href="mailto:kharolinesocials@gmail.com" class="footer-contact-link">KHAROLINESOCIALS@GMAIL.COM</a>
+                <a href="tel:+256766733766" class="footer-contact-link">+256 766 733766</a>
+                <p style="margin-top: 20px; opacity: 0.6;">Kampala, Uganda<br>Global business network</p>
+            </div>
+            <div class="footer-col">
+                <h4>NAVIGATION</h4>
+                <ul class="footer-nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="location.html">Location</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="let.html">Let's Work</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright-area">
+            <p>© 2026 KHAROLINE SOCIALS. BUSINESS DIRECTORY.</p>
+        </div>
+    </div>
+</footer>
+
+<div id="lightbox" onclick="closeLightbox()">
+    <img id="lightbox-img" src="" alt="Enlarged Image">
+</div>
+
+<script>
+    // ======================= CONFIGURATION =======================
+    // Firebase config (Replace with your actual Firebase web config, project ID: kharolinesocials2)
+// ======================= CONFIGURATION =======================
+// Firebase config (Project ID: kharolinesocials2)
+const firebaseConfig = {
+    apiKey: "AIzaSyBc6P7XpQz4fP7WqJk9LqGzUQy7hM8jN0", 
+    authDomain: "kharolinesocials2.firebaseapp.com",
+    projectId: "kharolinesocials2",
+    storageBucket: "kharolinesocials2.appspot.com",
+    messagingSenderId: "123456789012",
+    appId: "1:123456789012:web:abcdef1234567890"
+};
+
+// Cloudinary for url2png preview
+const CLOUDINARY_CLOUD_NAME = "dopuutcka";
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const socialCollection = db.collection("social");
+
+// DOM Elements
+const gridContainer = document.getElementById('businessesGridContainer');
+const categoryFilter = document.getElementById('categoryFilterSelect');
+const searchInput = document.getElementById('globalSearchInput');
+const countSpan = document.getElementById('businessCountDisplay');
+
+// State
+let firestoreBusinesses = [];      // master list from Firestore
+let currentCategory = 'all';
+let currentSearchTerm = '';
+let categoryOptionsSet = new Set();
+let debounceTimer;
+
+// Helper: Generate Cloudinary url2png preview from website URL
+function getWebsitePreviewImage(websiteUrl) {
+    if (!websiteUrl || websiteUrl.trim() === "") return null;
+    try {
+        const encodedUrl = encodeURIComponent(websiteUrl);
+        return `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/image/upload/url2png/${encodedUrl}`;
+    } catch(e) { return null; }
+}
+
+// Render businesses from given array
+function renderBusinesses(businessesArray) {
+    if (!gridContainer) return;
+    if (!businessesArray.length) {
+        gridContainer.innerHTML = `<div class="no-results">NO BUSINESSES MATCH YOUR SEARCH. TRY ANOTHER KEYWORD.</div>`;
+        countSpan.innerText = `0 BUSINESSES`;
+        return;
+    }
+    
+    gridContainer.innerHTML = businessesArray.map(biz => {
+        let imgSrc = biz.previewImage || getWebsitePreviewImage(biz.websiteLink);
+        if (!imgSrc) imgSrc = 'sh.jpg';
+        
+        let contactHtml = '';
+        if (biz.contact) contactHtml += `<p>📞 CONTACT: ${biz.contact}</p>`;
+        if (biz.location) contactHtml += `<p>📍 LOCATION: ${biz.location}</p>`;
+        if (!contactHtml) contactHtml = '<p>CONTACT INFO NOT PROVIDED</p>';
+        
+        return `
+            <div class="business-card" data-id="${biz.id}">
+                <img class="business-img" src="${imgSrc}" alt="${biz.name}" onerror="this.src='sh.jpg'">
+                <div class="business-info">
+                    <div class="business-category">${(biz.service || "SERVICE").toUpperCase()}</div>
+                    <div class="business-title">${biz.name}</div>
+                    <div class="business-desc">${biz.description || "No description provided."}</div>
+                    <div class="business-contact">
+                        ${contactHtml}
+                    </div>
+                    ${biz.tiktokLink ? `<a href="${biz.tiktokLink}" class="business-link" target="_blank">VIEW TIKTOK CAMPAIGN</a>` : ''}
+                    ${biz.websiteLink && !biz.tiktokLink ? `<a href="${biz.websiteLink}" class="business-link" target="_blank">VISIT WEBSITE</a>` : ''}
+                </div>
+            </div>
+        `;
+    }).join('');
+    countSpan.innerText = `${businessesArray.length} BUSINESS${businessesArray.length !== 1 ? 'ES' : ''}`;
+}
+
+// SMART SEARCH LOGIC (The AI Brain)
+async function performSmartSearch(term) {
+    // If search is empty, show all for current category
+    if (!term) {
+        filterAndRender();
+        return;
+    }
+
+    try {
+        // 1. Call your Netlify AI Function
+        const response = await fetch("/.netlify/functions/search-ai", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ searchTerm: term })
+        });
+        const data = await response.json();
+        const aiKeywords = data.keywords || [];
+
+        // 2. Filter local Firestore data using AI intelligence
+        const results = firestoreBusinesses.filter(biz => {
+            const name = (biz.name || "").toLowerCase();
+            const service = (biz.service || "").toLowerCase();
+            const desc = (biz.description || "").toLowerCase();
+            
+            // Check if name matches term OR if AI keywords match the service/description
+            const matchesSearch = name.includes(term.toLowerCase());
+            const matchesAI = aiKeywords.some(k => 
+                service.includes(k.toLowerCase()) || desc.includes(k.toLowerCase())
+            );
+
+            // Also respect the dropdown category if one is selected
+            const matchesCategory = currentCategory === 'all' || service === currentCategory.toLowerCase();
+
+            return (matchesSearch || matchesAI) && matchesCategory;
+        });
+
+        renderBusinesses(results);
+    } catch (err) {
+        console.error("AI Search failed, using basic fallback:", err);
+        const fallback = firestoreBusinesses.filter(b => 
+            b.name.toLowerCase().includes(term.toLowerCase())
+        );
+        renderBusinesses(fallback);
+    }
+}
+
+// Standard Filtering (for dropdown changes)
+function filterAndRender() {
+    let filtered = firestoreBusinesses;
+    if (currentCategory !== 'all') {
+        filtered = filtered.filter(b => (b.service || "").toLowerCase() === currentCategory.toLowerCase());
+    }
+    renderBusinesses(filtered);
+}
+
+// Handle search input (debounced to save AI credits)
+function onSearchInput(e) {
+    const term = e.target.value.trim();
+    currentSearchTerm = term;
+
+    if (debounceTimer) clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+        performSmartSearch(term);
+    }, 600);
+}
+
+// Update category dropdown options from Firestore data
+function updateCategoryFilterOptions() {
+    const categories = Array.from(categoryOptionsSet).sort();
+    categoryFilter.innerHTML = '<option value="all">ALL CATEGORIES</option>';
+    categories.forEach(cat => {
+        const option = document.createElement('option');
+        option.value = cat;
+        option.textContent = cat.toUpperCase();
+        categoryFilter.appendChild(option);
+    });
+}
+
+// Listen to Firestore
+function subscribeToFirestore() {
+    socialCollection.orderBy("businessName", "asc").onSnapshot(snapshot => {
+        const businesses = [];
+        categoryOptionsSet.clear();
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            const serviceType = data.serviceProductType || data.service || "General";
+            categoryOptionsSet.add(serviceType);
+            
+            businesses.push({
+                id: doc.id,
+                name: data.businessName || data.name || "Unnamed Business",
+                service: serviceType,
+                description: data.description || "",
+                contact: data.contact || "",
+                location: data.location || "",
+                tiktokLink: data.tiktokLink || "",
+                websiteLink: data.websiteLink || "",
+                previewImage: data.previewImage || null
+            });
+        });
+        firestoreBusinesses = businesses;
+        updateCategoryFilterOptions();
+        filterAndRender();
+    }, error => {
+        console.error("Firestore error:", error);
+        gridContainer.innerHTML = `<div class="no-results">FAILED TO LOAD. CHECK CONSOLE.</div>`;
+    });
+}
+
+// Category filter change
+function onCategoryChange(e) {
+    currentCategory = e.target.value;
+    if (currentSearchTerm) {
+        performSmartSearch(currentSearchTerm);
+    } else {
+        filterAndRender();
+    }
+}
+
+// ======================= GALLERY & UI (UNTOUCHED) =======================
+const kineticImages = ['kh4.jpg', 'kh1.jpg', 'he.jpg', 'kh3.jpg', 'at.jpg', 'va.jpg', 'ry.jpg', 'hs.jpg', 'kh8.jpg', 's4.jpg'];
+const stage = document.getElementById('kineticStage');
+let kineticCursor = 0;
+let kineticSlides = [];
+
+if (stage) {
+    kineticImages.forEach((src, idx) => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'kinetic-image-wrapper';
+        wrapper.innerHTML = `<div class="kinetic-card"><div class="kinetic-data-tag">FRAME_${(idx+1).toString().padStart(2, '0')}</div><img src="${src}"></div>`;
+        stage.appendChild(wrapper);
+        kineticSlides.push(wrapper);
+    });
+    function runKineticSequence() {
+        kineticSlides.forEach(slide => slide.classList.remove('active'));
+        if (kineticSlides[kineticCursor]) kineticSlides[kineticCursor].classList.add('active');
+        kineticCursor = (kineticCursor + 1) % kineticImages.length;
+        setTimeout(runKineticSequence, 4800);
+    }
+    runKineticSequence();
+}
+
+const thumbGrid = document.getElementById('thumbGrid');
+if (thumbGrid) {
+    kineticImages.forEach((imgSrc) => {
+        const thumbBox = document.createElement('div');
+        thumbBox.className = 'thumb-box';
+        thumbBox.innerHTML = `<img src="${imgSrc}"><div class="thumb-id">${imgSrc.toUpperCase().replace('.JPG', '')}</div>`;
+        thumbBox.onclick = () => openLightbox(imgSrc);
+        thumbGrid.appendChild(thumbBox);
+    });
+}
+
+function openLightbox(src) {
+    const lb = document.getElementById('lightbox');
+    document.getElementById('lightbox-img').src = src;
+    lb.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+function closeLightbox() {
+    document.getElementById('lightbox').style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+// Event listeners
+categoryFilter.addEventListener('change', onCategoryChange);
+searchInput.addEventListener('input', onSearchInput);
+subscribeToFirestore();
+</script>
+</body>
+</html>
