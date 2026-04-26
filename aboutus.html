@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caroline SMM Portfolio | Secure Viewer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        /* CORE RESET */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', Courier, monospace;
+            border-radius: 0 !important;
+        }
+
+        body, html {
+            height: 100%;
+            width: 100%;
+            background-color: #000;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        /* REAL-TIME DATA LOADER */
+        #loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            border: 20px solid #000;
+        }
+
+        .loader-content {
+            width: 100%;
+            max-width: 400px;
+            text-align: left;
+        }
+
+        .glitch-text {
+            font-size: 12px;
+            letter-spacing: 4px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            border-left: 3px solid #fff;
+            padding-left: 10px;
+        }
+
+        .progress-wrapper {
+            width: 100%;
+            height: 40px;
+            border: 1px solid #fff;
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding: 4px;
+        }
+
+        #progress-fill {
+            height: 100%;
+            width: 0%;
+            background: #fff;
+            transition: width 0.2s ease-out;
+        }
+
+        #percentage-display {
+            position: absolute;
+            right: 0;
+            top: -25px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        /* INTERFACE */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 60px;
+            background: #000;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 25px;
+            z-index: 100;
+        }
+
+        .nav-select {
+            background: #000;
+            color: #fff;
+            border: 1px solid #fff;
+            padding: 5px 10px;
+            font-size: 12px;
+            cursor: pointer;
+            outline: none;
+        }
+
+        #pdf-render-zone {
+            height: 100vh;
+            padding-top: 80px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: #0a0a0a;
+        }
+
+        canvas {
+            margin-bottom: 30px;
+            border: 1px solid #222;
+            max-width: 90%;
+            height: auto !important;
+        }
+
+        #download-btn {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: #fff;
+            color: #000;
+            padding: 15px 30px;
+            font-weight: 900;
+            text-decoration: none;
+            font-size: 12px;
+            text-transform: uppercase;
+            z-index: 101;
+            transition: transform 0.2s;
+        }
+
+        #download-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* LOGGING CONSOLE */
+        #log-box {
+            margin-top: 15px;
+            font-size: 9px;
+            color: #666;
+            height: 50px;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loader-overlay">
+        <div class="loader-content">
+            <div id="percentage-display">0%</div>
+            <div class="glitch-text" id="status-msg">Fetching Byte Stream</div>
+            <div class="progress-wrapper">
+                <div id="progress-fill"></div>
+            </div>
+            <div id="log-box"></div>
+        </div>
+    </div>
+
+    <header>
+        <div style="font-weight: bold; letter-spacing: 2px;">CAROLINE SMM</div>
+        <select class="nav-select" onchange="if(this.value) window.location.href=this.value">
+            <option value="">NAVIGATION</option>
+            <option value="index.html">HOME</option>
+            <option value="contact.html">CONTACT</option>
+            <option value="location.html">LOCATION</option>
+            <option value="let.html">LET'S WORK</option>
+            <option value="buy.html">PRODUCTS</option>
+        </select>
+    </header>
+
+    <main id="pdf-render-zone"></main>
+
+    <a href="Caroline SMM Portfolio.pdf" download id="download-btn">Get PDF File</a>
+
+    <script>
+        const url = 'Caroline SMM Portfolio.pdf';
+        const pdfjsLib = window['pdfjs-dist/build/pdf'];
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+
+        const fill = document.getElementById('progress-fill');
+        const perc = document.getElementById('percentage-display');
+        const status = document.getElementById('status-msg');
+        const logBox = document.getElementById('log-box');
+
+        function addLog(msg) {
+            const div = document.createElement('div');
+            div.textContent = `> ${msg}`;
+            logBox.prepend(div);
+        }
+
+        async function initViewer() {
+            addLog("Initializing core...");
+            
+            try {
+                const loadingTask = pdfjsLib.getDocument(url);
+
+                // REAL TRACKING HAPPENS HERE
+                loadingTask.onProgress = function(data) {
+                    if (data.total > 0) {
+                        const ratio = (data.loaded / data.total) * 100;
+                        const rounded = Math.floor(ratio);
+                        fill.style.width = rounded + '%';
+                        perc.textContent = rounded + '%';
+                        addLog(`Received ${data.loaded} of ${data.total} bytes`);
+                    }
+                };
+
+                const pdf = await loadingTask.promise;
+                status.textContent = "Decrypting Pages";
+                addLog("PDF Document handshake complete.");
+
+                const container = document.getElementById('pdf-render-zone');
+                
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    const page = await pdf.getPage(i);
+                    const viewport = page.getViewport({ scale: 2 });
+                    const canvas = document.createElement('canvas');
+                    const context = canvas.getContext('2d');
+                    
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+                    
+                    container.appendChild(canvas);
+                    
+                    await page.render({
+                        canvasContext: context,
+                        viewport: viewport
+                    }).promise;
+                    
+                    addLog(`Page ${i} rendered successfully`);
+                }
+
+                // Smooth exit once everything is truly loaded
+                gsap.to("#loader-overlay", {
+                    duration: 0.8,
+                    opacity: 0,
+                    pointerEvents: 'none',
+                    ease: "power4.out",
+                    onComplete: () => {
+                        document.getElementById('loader-overlay').style.display = 'none';
+                    }
+                });
+
+            } catch (err) {
+                status.textContent = "Critical Error";
+                status.style.color = "#ff0000";
+                addLog("Object not found or path invalid.");
+                console.error(err);
+            }
+        }
+
+        window.onload = initViewer;
+    </script>
+</body>
+</html>
