@@ -1,0 +1,945 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Kharoline Socials | Caroline Nahirya – Strategic SMM & Content Creation</title>
+    <!-- Favicon using logo image -->
+    <link rel="icon" type="image/png" href="kh.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    
+    <style>
+        /* ---------- RESET & GLOBAL ---------- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            border-radius: 0 !important;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        html, body {
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+            width: 100%;
+            max-width: 100%;
+            position: relative;
+        }
+
+        body {
+            background-color: #FFFFFF;
+            font-family: 'Inter', sans-serif;
+            color: #000000;
+            line-height: 1.7;
+        }
+
+        h1, h2, h3, h4, .nav-logo-text {
+            font-family: 'Space Grotesk', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+        }
+
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 40px;
+            width: 100%;
+        }
+
+        section {
+            padding: 100px 0;
+            width: 100%;
+        }
+
+        /* ---------- NAVIGATION (logo left margin, hamburger, no old dropdown) ---------- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 90px;
+            background: #FFFFFF;
+            border-bottom: 2px solid #000000;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-inner {
+            width: 100%;
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-container img {
+            height: 60px;
+            display: block;
+            /* left margin of 5px, extends left */
+            margin-left: 5px;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        /* About Us pulse button (unchanged) */
+        .about-pulse-link {
+            display: inline-block;
+            padding: 10px 24px;
+            border: 3px solid #00E676;
+            background: transparent;
+            font-weight: 800;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            text-decoration: none;
+            color: #000000;
+            transition: all 0.2s ease;
+            animation: subtleSizePulse 1.2s infinite ease-in-out;
+            font-family: 'Space Grotesk', sans-serif;
+            white-space: nowrap;
+        }
+
+        .about-pulse-link:hover {
+            background: #00E676;
+            color: #000000;
+            border-color: #000000;
+            animation: none;
+        }
+
+        @keyframes subtleSizePulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.07); }
+            100% { transform: scale(1); }
+        }
+
+        /* ---------- HAMBURGER ICON (Three bars to X animation on toggle) ---------- */
+        .hamburger-menu {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .hamburger-icon {
+            width: 32px;
+            height: 26px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger-icon span {
+            display: block;
+            height: 3px;
+            width: 100%;
+            background-color: #000000;
+            border-radius: 2px;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        /* X transformation when menu open */
+        .hamburger-icon.open span:nth-child(1) {
+            transform: translateY(11.5px) rotate(45deg);
+        }
+
+        .hamburger-icon.open span:nth-child(2) {
+            opacity: 0;
+            transform: scaleX(0);
+        }
+
+        .hamburger-icon.open span:nth-child(3) {
+            transform: translateY(-11.5px) rotate(-45deg);
+        }
+
+        /* ---------- FULLSCREEN OVERLAY MENU (black bg, 100% height, white text, hover #773244) ---------- */
+        .fullscreen-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: #000000;
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+
+        .fullscreen-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* White X close button - top right, clearly visible */
+        .close-menu-btn {
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            z-index: 2001;
+            background: transparent;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-menu-btn::before,
+        .close-menu-btn::after {
+            content: '';
+            position: absolute;
+            width: 28px;
+            height: 3px;
+            background-color: #ffffff;
+            border-radius: 2px;
+            transition: transform 0.2s ease;
+        }
+
+        .close-menu-btn::before {
+            transform: rotate(45deg);
+        }
+
+        .close-menu-btn::after {
+            transform: rotate(-45deg);
+        }
+
+        .close-menu-btn:hover::before,
+        .close-menu-btn:hover::after {
+            background-color: #773244;
+        }
+
+        .overlay-nav {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .overlay-nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .overlay-nav li {
+            margin: 2rem 0;
+        }
+
+        .overlay-nav a {
+            color: #ffffff;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(2rem, 8vw, 3.5rem);
+            text-decoration: none;
+            text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            transition: all 0.25s ease;
+            display: inline-block;
+            padding: 0.25rem 1rem;
+        }
+
+        /* Hover state color #773244 (burgundy) as requested */
+        .overlay-nav a:hover {
+            color: #773244;
+            transform: scale(1.02);
+        }
+
+        /* prevent body scroll when menu open */
+        body.menu-open {
+            overflow: hidden;
+        }
+
+        /* ---------- HERO (unchanged, includes the required text) ---------- */
+        .hero {
+            height: 100vh;
+            background: linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)), url('kh.png');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #FFFFFF;
+            padding-top: 90px;
+        }
+        .hero-sub {
+            font-size: clamp(1rem, 2vw, 1.4rem);
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+        .hero-desc {
+            font-size: 1rem;
+            max-width: 700px;
+            margin: 0 auto 35px;
+            opacity: 0.9;
+            text-transform: none;
+            letter-spacing: normal;
+            line-height: 1.5;
+        }
+        .hero-btn {
+            display: inline-block;
+            padding: 16px 36px;
+            background: #FFFFFF;
+            color: #000000;
+            font-weight: 800;
+            text-transform: uppercase;
+            text-decoration: none;
+            border: 2px solid #FFFFFF;
+            transition: 0.2s;
+        }
+        .hero-btn:hover {
+            background: transparent;
+            color: #FFFFFF;
+        }
+
+        /* ---------- ABOUT ME (original) ---------- */
+        .about-original-container {
+            background-color: white;
+            display: flex;
+            justify-content: center;
+            padding: 80px 20px;
+        }
+        .card {
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+        }
+        .header-text {
+            font-size: clamp(2rem, 8vw, 3.5rem);
+            letter-spacing: -1px;
+            margin: 0 0 -5% 0;
+            position: relative;
+            z-index: 2;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 900;
+        }
+        .image-container {
+            width: 100%;
+            aspect-ratio: 4 / 5;
+            background-image: url('kh.png');
+            background-size: cover;
+            background-position: center;
+            border-top-left-radius: 15%;
+            margin-bottom: 25px;
+        }
+        .description {
+            font-size: clamp(0.9rem, 4vw, 1.1rem);
+            line-height: 1.6;
+            letter-spacing: 0.3px;
+            font-weight: 500;
+            text-align: justify;
+            text-align-last: left;
+            padding: 0 5px;
+            color: #111;
+        }
+        @media (max-width: 380px) {
+            .header-text { margin-bottom: -8%; }
+        }
+
+        /* ---------- TIKTOK GALLERY (unchanged) ---------- */
+        .tiktok-gallery-section {
+            background: #F9F9F9;
+            padding: 80px 0;
+            border-bottom: 2px solid black;
+        }
+        .video-scroll-container {
+            width: 100%;
+            overflow-x: auto;
+            scrollbar-width: thin;
+            cursor: grab;
+        }
+        .video-grid {
+            display: flex;
+            gap: 28px;
+            width: max-content;
+            padding: 8px 0;
+        }
+        .video-card {
+            flex-shrink: 0;
+            width: min(280px, 75vw);
+            background: white;
+            border: 2px solid black;
+        }
+        .video-wrapper {
+            aspect-ratio: 9 / 16;
+            background: #111;
+        }
+        .video-wrapper iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* ---------- OUR RECENT WORK (bg #773244) ---------- */
+        .recent-work-section {
+            background: #773244;
+            width: 100%;
+            padding: 80px 0;
+        }
+        .section-heading {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        .section-heading h2 {
+            font-size: 3rem;
+            color: white;
+            font-weight: 900;
+            letter-spacing: -1px;
+            background: rgba(0,0,0,0.2);
+            display: inline-block;
+            padding: 8px 40px;
+            border: 2px solid white;
+        }
+        .recent-items-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        .recent-work-item {
+            background: #773244;
+            width: 100%;
+        }
+        .recent-work-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+        }
+        .recent-work-item .item-description {
+            padding: 1.2rem 0.5rem 0.8rem 0;
+            font-size: 1rem;
+            line-height: 1.6;
+            color: white;
+            background: #773244;
+            text-align: left;
+            font-weight: 400;
+        }
+        .recent-work-item .item-description p {
+            margin: 0;
+        }
+
+        /* ---------- MY SERVICES (bg #8A3AFF) unchanged ---------- */
+        .pricing-section {
+            background: #8A3AFF;
+            color: white;
+        }
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 50px;
+            margin-top: 40px;
+        }
+        .pricing-card {
+            background: rgba(0,0,0,0.2);
+            padding: 40px;
+            border-left: 6px solid white;
+        }
+        .pricing-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+        .pricing-card ul {
+            list-style: none;
+            margin-bottom: 25px;
+        }
+        .pricing-card li {
+            padding-left: 22px;
+            position: relative;
+            margin-bottom: 10px;
+        }
+        .pricing-card li::before {
+            content: "—";
+            position: absolute;
+            left: 0;
+        }
+        .price-tag {
+            font-size: 1.8rem;
+            font-weight: 900;
+            border-top: 1px solid rgba(255,255,255,0.3);
+            padding-top: 20px;
+            display: block;
+        }
+        .addon-note {
+            margin-top: 20px;
+            font-size: 0.8rem;
+            background: rgba(0,0,0,0.25);
+            padding: 12px;
+        }
+
+        /* SIGNUP SECTION (unchanged) */
+        .signup-updates {
+            background: #111;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        .signup-form {
+            max-width: 550px;
+            margin: 30px auto 0;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+        .signup-form input {
+            background: #222;
+            border: 1px solid #444;
+            padding: 14px 20px;
+            color: white;
+            font-size: 1rem;
+        }
+        .signup-form button {
+            background: white;
+            color: black;
+            font-weight: 900;
+            text-transform: uppercase;
+            padding: 14px;
+            cursor: pointer;
+            border: none;
+            font-size: 0.9rem;
+        }
+        .signup-form button:hover {
+            background: #773244;
+            color: white;
+        }
+        #signup-message {
+            margin-top: 20px;
+            font-size: 0.8rem;
+        }
+
+        /* FOOTER (unchanged) */
+        .master-footer {
+            background: #000000;
+            color: #FFFFFF;
+            padding: 100px 0 60px;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 80px;
+            margin-bottom: 80px;
+        }
+        .footer-col h4 {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #FFFFFF;
+            display: inline-block;
+            padding-bottom: 6px;
+        }
+        .footer-brand img {
+            height: 70px;
+            margin-bottom: 20px;
+        }
+        .footer-contact-link {
+            color: #FFFFFF;
+            text-decoration: none;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 12px;
+        }
+        .footer-nav-links {
+            list-style: none;
+        }
+        .footer-nav-links li {
+            margin-bottom: 12px;
+        }
+        .footer-nav-links a {
+            color: #CCCCCC;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+        }
+        .footer-nav-links a:hover {
+            color: white;
+        }
+        .copyright-area {
+            text-align: center;
+            border-top: 1px solid #222;
+            padding-top: 40px;
+            font-size: 0.7rem;
+            opacity: 0.6;
+        }
+        @media (max-width: 1024px) {
+            .footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+        }
+        @media (max-width: 768px) {
+            .container { padding: 0 20px; }
+            .footer-grid { grid-template-columns: 1fr; }
+            .section-heading h2 { font-size: 2rem; }
+            .logo-container img {
+                margin-left: 5px;
+            }
+            .close-menu-btn {
+                top: 20px;
+                right: 20px;
+            }
+        }
+        .loader {
+            text-align: center;
+            padding: 40px;
+            color: white;
+            font-weight: bold;
+        }
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="nav-inner">
+        <div class="logo-container">
+            <img src="kh.png" alt="Kharoline Socials">
+        </div>
+        <div class="nav-actions">
+            <a href="aboutus.html" class="about-pulse-link" id="dynamicAboutLink">ABOUT US</a>
+            <!-- Hamburger icon => toggles fullscreen menu -->
+            <div class="hamburger-menu" id="hamburgerMenu">
+                <div class="hamburger-icon" id="hamburgerIcon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- FULLSCREEN OVERLAY MENU (black background, 100% height, white text, hover #773244) -->
+<div class="fullscreen-overlay" id="fullscreenOverlay">
+    <!-- White X close button (works to close menu) -->
+    <button class="close-menu-btn" id="closeMenuBtn" aria-label="Close menu"></button>
+    <div class="overlay-nav">
+        <ul>
+            <li><a href="index.html">HOME</a></li>
+            <li><a href="contact.html">CONTACT</a></li>
+            <li><a href="let.html">LET'S WORK</a></li>
+        </ul>
+    </div>
+</div>
+
+<!-- HERO SECTION (the requested text is already inside hero-desc) -->
+<section class="hero">
+    <div class="container">
+        <p class="hero-sub">THE STRATEGIC PARTNER YOUR BRAND NEEDS TO SCALE.</p>
+        <div class="hero-desc">data-driven social architecture, organic growth systems, and content that converts. We don't just post — we engineer visibility.</div>
+        <a href="#signup" class="hero-btn">LET'S WORK</a>
+    </div>
+</section>
+
+<!-- ABOUT ME (original design) -->
+<div class="about-original-container">
+    <div class="card">
+        <h1 class="header-text">ABOUT ME</h1>
+        <div class="image-container"></div>
+        <div class="description">
+            I'm Caroline, a social media manager and content creator with over three years of experience in organic and paid social media marketing, content creation, community management and copywriting.
+            <br><br>
+            I am a results driven social media manager with an eye for trends and a knack for engaging content. I specialize in developing strategies that drive brand awareness, meaningful connections and conversions to sales. I thrive on delivering measurable results.
+            <br><br>
+            Let’s work together and take your social media presence to new heights.
+        </div>
+    </div>
+</div>
+
+<!-- TIKTOK VIDEO GALLERY (only videos) -->
+<div class="tiktok-gallery-section">
+    <div class="container">
+        <div class="section-label" style="font-size:12px; letter-spacing:3px; margin-bottom: 20px;">PROVEN VIRALITY • TIKTOK PERFORMANCE</div>
+        <div class="video-scroll-container" id="videoScrollContainer">
+            <div class="video-grid" id="tiktokVideoGrid"></div>
+        </div>
+    </div>
+</div>
+
+<!-- OUR RECENT WORK (dynamic from Firebase) -->
+<section class="recent-work-section" id="recentWork">
+    <div class="container">
+        <div class="section-heading">
+            <h2>OUR RECENT WORK</h2>
+        </div>
+        <div id="dynamic-recent-container" class="recent-items-container">
+            <div class="loader">Loading impactful visuals...</div>
+        </div>
+    </div>
+</section>
+
+<!-- MY SERVICES (bg #8A3AFF) -->
+<section id="pricing" class="pricing-section">
+    <div class="container">
+        <div class="section-heading" style="margin-bottom:20px;">
+            <h2 style="color:white; border-color:white; background:transparent;">MY SERVICES</h2>
+        </div>
+        <div class="pricing-grid">
+            <div class="pricing-card">
+                <h3>SOCIAL MEDIA MANAGEMENT + CONTENT</h3>
+                <ul><li>Idea generation & content strategy</li><li>Filming, video editing + photography</li><li>Captions + hashtags + publishing</li><li>Performance report & optimisation</li></ul>
+                <span class="price-tag">UGX 600,000 / month</span>
+                <div class="addon-note"><strong>DELIVERABLES:</strong> 5 videos per week, 6 photos + 2 graphics, hooks & captions</div>
+            </div>
+            <div class="pricing-card">
+                <h3>CONTENT CREATION ONLY</h3>
+                <ul><li>Idea generation & strategy</li><li>Filming, video editing + photography</li><li>Captions, hashtags + hooks</li><li>Delivered "Ready to Post"</li></ul>
+                <span class="price-tag">UGX 500,000 / month</span>
+                <div class="addon-note">Client handles publishing. High-quality assets delivered weekly.</div>
+            </div>
+            <div class="pricing-card">
+                <h3>ADD-ONS & SCOPE NOTES</h3>
+                <ul><li>Influencer collaborations</li><li>Paid ads management (Meta/TikTok)</li><li>Two revisions only for graphic designs</li></ul>
+                <span class="price-tag">CUSTOM QUOTE</span>
+                <div class="addon-note">Two revisions only for graphic designs. Additional revisions billed separately.</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SIGNUP SECTION (Firebase) -->
+<section class="signup-updates" id="signup">
+    <div class="container">
+        <h2 style="font-size: 2rem; margin-bottom: 10px;">Receive strategic updates</h2>
+        <p>Sign up with your email & first name. I'll help you stay ahead with organic growth insights and exclusive offers.</p>
+        <div class="signup-form">
+            <input type="text" id="firstNameInput" placeholder="First Name *">
+            <input type="email" id="emailInput" placeholder="Email Address *">
+            <button id="subscribeBtn">Subscribe → Get updates</button>
+        </div>
+        <div id="signup-message"></div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="master-footer" id="contact-footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-col footer-brand">
+                <img src="kh.png" alt="Kharoline Socials">
+                <p>Kharoline Socials is a high-performance content laboratory specializing in the architecture of attention. We build digital infrastructures that convert scrolling into results.</p>
+            </div>
+            <div class="footer-col">
+                <h4>CONTACT GATEWAY</h4>
+                <a href="mailto:kharolinesocials@gmail.com" class="footer-contact-link">KHAROLINESOCIALS@GMAIL.COM</a>
+                <a href="tel:+256766733766" class="footer-contact-link">+256 766 733766</a>
+                <p style="margin-top: 20px; opacity: 0.6;">Remote Operations<br>Kampala, Uganda</p>
+            </div>
+            <div class="footer-col">
+                <h4>NAVIGATION</h4>
+                <ul class="footer-nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright-area">
+            <p>© 2026 KHAROLINE SOCIALS. NO REPRODUCTION WITHOUT AUTHORIZATION.</p>
+            <p style="font-size: 10px; margin-top: 10px;">DESIGNED FOR MAXIMUM DIGITAL IMPACT.</p>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // -------------------- FIREBASE CONFIG (unchanged) --------------------
+    const firebaseConfig = {
+        apiKey: "AIzaSyBc6P7XpQz4fP7WqJk9LqGzUQy7hM8jN0",
+        authDomain: "kharolinesocials2.firebaseapp.com",
+        projectId: "kharolinesocials2",
+        storageBucket: "kharolinesocials2.appspot.com",
+        messagingSenderId: "123456789012",
+        appId: "1:123456789012:web:abcdef1234567890"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // 1) Load recent work from Firestore 'social' collection
+    function loadRecentWork() {
+        const container = document.getElementById('dynamic-recent-container');
+        container.innerHTML = '<div class="loader">Loading creative work...</div>';
+        db.collection('social').orderBy('timestamp', 'desc').get().then(snapshot => {
+            if (snapshot.empty) {
+                container.innerHTML = '<div style="background:#773244; color:white; padding:2rem; text-align:center;">✨ No projects yet. Check back soon for inspiring visuals.</div>';
+                return;
+            }
+            container.innerHTML = '';
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                let imageUrl = data.previewImage || 'https://placehold.co/1200x800/2c2c2c/white?text=KHAROLINE+VISUAL';
+                let descriptionText = data.description || data.businessName || 'Strategic content that drives engagement and sales.';
+                if (data.serviceProductType && !data.description) {
+                    descriptionText = `${data.serviceProductType} — ${descriptionText}`;
+                }
+                const workDiv = document.createElement('div');
+                workDiv.className = 'recent-work-item';
+                workDiv.innerHTML = `
+                    <img src="${imageUrl}" alt="recent work" onerror="this.src='https://placehold.co/1200x800/111/white?text=IMAGE+LOAD'">
+                    <div class="item-description">
+                        <p>${escapeHtml(descriptionText)}</p>
+                    </div>
+                `;
+                container.appendChild(workDiv);
+            });
+        }).catch(err => {
+            console.error(err);
+            container.innerHTML = '<div style="background:#773244; color:white; padding:2rem; text-align:center;">⚠️ Unable to load portfolio. But creativity remains.</div>';
+        });
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    // 2) TikTok videos
+    const tiktokVideos = [
+        { embedUrl: "https://www.tiktok.com/embed/v2/7620082859377773842" },
+        { embedUrl: "https://www.tiktok.com/embed/v2/7610498930941644040" }
+    ];
+    const videoGrid = document.getElementById('tiktokVideoGrid');
+    if (videoGrid) {
+        videoGrid.innerHTML = '';
+        tiktokVideos.forEach(video => {
+            const card = document.createElement('div');
+            card.className = 'video-card';
+            card.innerHTML = `<div class="video-wrapper"><iframe src="${video.embedUrl}" frameborder="0" allowfullscreen loading="lazy"></iframe></div>`;
+            videoGrid.appendChild(card);
+        });
+    }
+
+    // drag scroll for video container
+    const scrollCont = document.getElementById('videoScrollContainer');
+    if (scrollCont) {
+        let isDown = false, startX, scrollLeft;
+        scrollCont.addEventListener('mousedown', (e) => { isDown = true; startX = e.pageX - scrollCont.offsetLeft; scrollLeft = scrollCont.scrollLeft; scrollCont.style.cursor = 'grabbing'; });
+        scrollCont.addEventListener('mouseleave', () => { isDown = false; scrollCont.style.cursor = 'grab'; });
+        scrollCont.addEventListener('mouseup', () => { isDown = false; scrollCont.style.cursor = 'grab'; });
+        scrollCont.addEventListener('mousemove', (e) => { if(!isDown) return; e.preventDefault(); const walk = (e.pageX - scrollCont.offsetLeft - startX) * 1.5; scrollCont.scrollLeft = scrollLeft - walk; });
+        scrollCont.style.cursor = 'grab';
+    }
+
+    // 3) Subscriber signup to Firestore
+    const subscribeBtn = document.getElementById('subscribeBtn');
+    const signupMsg = document.getElementById('signup-message');
+    async function addSubscriber(firstName, email) {
+        if (!firstName || !email) throw new Error('First name and email required');
+        const emailRegex = /^[^\s@]+@([^\s@.,]+\.)+[^\s@.,]{2,}$/;
+        if (!emailRegex.test(email)) throw new Error('Valid email required');
+        await db.collection('subscribers').add({
+            firstName: firstName.trim(),
+            email: email.trim().toLowerCase(),
+            timestamp: Date.now(),
+            source: 'main_website'
+        });
+    }
+    if (subscribeBtn) {
+        subscribeBtn.addEventListener('click', async () => {
+            const firstName = document.getElementById('firstNameInput').value.trim();
+            const email = document.getElementById('emailInput').value.trim();
+            signupMsg.innerHTML = '<span style="color:#ffcc00;">Processing...</span>';
+            try {
+                await addSubscriber(firstName, email);
+                signupMsg.innerHTML = '<span style="color:#00ffa2;">✓ Thank you! You\'ll receive strategic updates.</span>';
+                document.getElementById('firstNameInput').value = '';
+                document.getElementById('emailInput').value = '';
+                setTimeout(() => signupMsg.innerHTML = '', 5000);
+            } catch (err) {
+                signupMsg.innerHTML = `<span style="color:#ff8888;">⚠${err.message}</span>`;
+            }
+        });
+    }
+
+    // 4) Dynamic about link random text (unchanged)
+    const aboutLink = document.getElementById('dynamicAboutLink');
+    const options = ['ABOUT US', 'SEE MORE', 'MY STORY'];
+    setInterval(() => {
+        if (aboutLink) aboutLink.innerText = options[Math.floor(Math.random() * options.length)];
+    }, 3200);
+
+    // -------------------- FULLSCREEN MENU LOGIC (with X close button and hamburger toggle) --------------------
+    const hamburgerIcon = document.getElementById('hamburgerIcon');
+    const overlayMenu = document.getElementById('fullscreenOverlay');
+    const closeBtn = document.getElementById('closeMenuBtn');
+    const bodyElement = document.body;
+
+    function openMenu() {
+        overlayMenu.classList.add('active');
+        hamburgerIcon.classList.add('open');
+        bodyElement.classList.add('menu-open');
+    }
+
+    function closeMenu() {
+        overlayMenu.classList.remove('active');
+        hamburgerIcon.classList.remove('open');
+        bodyElement.classList.remove('menu-open');
+    }
+
+    // Toggle on hamburger click
+    if (hamburgerIcon) {
+        hamburgerIcon.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (overlayMenu.classList.contains('active')) {
+                closeMenu();
+            } else {
+                openMenu();
+            }
+        });
+    }
+
+    // Close button (white X) -> closes menu
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+            closeMenu();
+        });
+    }
+
+    // When clicking any navigation link inside overlay, close menu
+    const overlayLinks = document.querySelectorAll('.fullscreen-overlay a');
+    overlayLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            closeMenu();
+        });
+    });
+
+    // Pressing Escape key closes menu
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && overlayMenu.classList.contains('active')) {
+            closeMenu();
+        }
+    });
+
+    loadRecentWork();
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const href = this.getAttribute('href');
+                if (href === "#" || href === "") return;
+                const target = document.querySelector(href);
+                if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+            });
+        });
+    });
+</script>
+</body>
+</html>
